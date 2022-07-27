@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 import { AuthService } from '../../services/auth.service';
 
@@ -33,9 +34,11 @@ export class LoginComponent implements OnInit {
     const { email, password } = this.loginForm.value;
 
     this.authService.login(email, password).subscribe((response) => {
-      console.log(response);
+      if (response.success === true) {
+        this.router.navigate(['/dashboard']);
+      } else {
+        Swal.fire('Error', response.msg, 'error');
+      }
     });
-
-    this.router.navigate(['/dashboard']);
   }
 }
