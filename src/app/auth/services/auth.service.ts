@@ -83,4 +83,31 @@ export class AuthService {
   logout() {
     localStorage.removeItem('token');
   }
+
+  register(
+    name: string,
+    email: string,
+    password: string
+  ): Observable<AuthResponse> {
+    const url: string = `${this.urlBase}/auth/new`;
+    const body = {
+      name,
+      email,
+      password,
+    };
+
+    return this.http.post<AuthResponse>(url, body).pipe(
+      tap((response) => {
+        if (response.ok) {
+          this._user = {
+            name: response.name!,
+            uid: response.uid!,
+          };
+
+          localStorage.setItem('token', response.token!);
+        }
+      }),
+      catchError((err) => of(err.error))
+    );
+  }
 }
